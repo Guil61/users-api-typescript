@@ -1,7 +1,11 @@
+require("dotenv").config();
+
 import express, { Request, Response } from "express";
 import db from "./config/databse.config";
 import UserInstance from "./model/userModel";
 import usersRouter from "./routes/userRoutes";
+import { errorMiddleware } from "./middleware/error";
+import authRouter from "./routes/authRoutes";
 
 db.authenticate()
   .then(async () => {
@@ -15,10 +19,13 @@ db.authenticate()
   });
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use("/users", usersRouter);
+app.use("/auth", authRouter);
+
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log("Server running, port:" + port);

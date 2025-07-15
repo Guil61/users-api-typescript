@@ -1,14 +1,41 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../config/databse.config";
 
-interface UserAttributes {
-  id: number;
+export interface CreateUserDto {
   nome: string;
   email: string;
   senha: string;
 }
 
-class UserInstance extends Model<UserAttributes> {}
+export interface UserLoginRequestDto {
+  email: string;
+  senha: string;
+}
+
+export interface UserLoginResponseDto {
+  email: string;
+  token: string;
+}
+
+export interface UserReponseDto {
+  id: number;
+  nome: string;
+  email: string;
+}
+
+export interface UserAttributes {
+  id?: number;
+  nome: string;
+  email: string;
+  senha: string;
+}
+
+export class UserInstance extends Model<UserAttributes> implements UserAttributes {
+  id?: number;
+  nome!: string;
+  email!: string;
+  senha!: string;
+}
 
 UserInstance.init(
   {
@@ -16,7 +43,7 @@ UserInstance.init(
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
-      autoIncrement: true
+      autoIncrement: true,
     },
     nome: {
       type: DataTypes.STRING,
@@ -31,7 +58,6 @@ UserInstance.init(
       allowNull: false,
     },
   },
-
   {
     sequelize: db,
     tableName: "usuarios",
