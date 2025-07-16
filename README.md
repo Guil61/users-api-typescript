@@ -258,4 +258,4 @@ DELETE http://localhost:8080/contratos/3
 
 ----------
 
- Feito com ❤️ por [André Guil](https://github.com/Guil61) 
+ Feito por [André Guil](https://github.com/Guil61) 
