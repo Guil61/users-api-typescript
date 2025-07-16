@@ -199,28 +199,6 @@ http://localhost:8080/users/
 JSON
 
 ```
-
-
-```
-
-
-### DELETE /contratos/{id}
-
-**Descrição:** Exclui um contrato pelo ID.
-
-**Exemplo de Requisição:**
-
-Bash
-
-```
-DELETE http://localhost:8080/contratos/3
-
-```
-
-
-**Exemplo de Resposta:**
-
-```
 [
     {
         "id": 1,
@@ -244,9 +222,9 @@ DELETE http://localhost:8080/contratos/3
         "updatedAt": "2025-07-15T14:47:49.614Z"
     }
 ]
+
+
 ```
-
-
 
 
 ## 🛠️ Construído com
