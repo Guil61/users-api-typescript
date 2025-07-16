@@ -54,7 +54,7 @@ Siga estas instruções para ter o projeto rodando na sua máquina local:
 
 ### 🔧 Endpoints para testes
 
-### POST /auth/registe
+### POST /auth/register
 
 **Descrição:** Registra um usuário.
 
