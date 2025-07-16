@@ -21,7 +21,7 @@ export class AuthController {
   async register (req: Request, res: Response) {
     try{
       const register = await this.authService.register(req.body);
-      return res.status(201).json({msg: "Usuário criado!"});
+      return res.status(201).json({msg: "Usuário criado!", register});
     }catch(error){
         console.error(error);
         if (error instanceof BadRequestError) {

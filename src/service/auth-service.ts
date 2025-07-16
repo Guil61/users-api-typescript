@@ -63,6 +63,11 @@ export class AuthService {
     
         const user = await UserInstance.create(data);
     
-        return userEntityToResponseDto(user);
+        // return userEntityToResponseDto(user);
+
+        return {
+          nome: data.nome,
+          email: data.email,
+        }
   }
 }
