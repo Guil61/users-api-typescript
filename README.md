@@ -35,12 +35,8 @@ Siga estas instruções para ter o projeto rodando na sua máquina local:
 
 2.  **Abra o arquivo .env e configure as portas do seu banco e a que deseja iniciar o servidor:**
     
-    Bash
-    
-    ```
-    <img width="303" height="138" alt="Captura de tela de 2025-07-16 11-17-20" src="https://github.com/user-attachments/assets/3b8a51f3-3ae8-42eb-86a2-820906e364c6" />
+    <img width="303" height="138" alt="Captura de tela de 2025-07-16 11-17-20" src="https://github.com/user-attachments/assets/34d3a180-ced7-4f05-bf29-2c9b814a323e" />
 
-    ```
 
 
 3.  **Inicie o servidor:**
