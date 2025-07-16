@@ -236,4 +236,4 @@ JSON
 
 ----------
 
- Feito por [André Guil](https://github.com/Guil61) 
+ Feito por [Andre Guil](https://github.com/Guil61) 
