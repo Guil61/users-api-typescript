@@ -7,6 +7,13 @@ export interface CreateUserDto {
   senha: string;
 }
 
+export interface UpdateUserDto {
+  id?: number;
+  nome: string;
+  email: string;
+  senha: string;
+}
+
 export interface UserLoginRequestDto {
   email: string;
   senha: string;
@@ -18,7 +25,7 @@ export interface UserLoginResponseDto {
 }
 
 export interface UserReponseDto {
-  id: number;
+  id?: number;
   nome: string;
   email: string;
 }
@@ -30,7 +37,10 @@ export interface UserAttributes {
   senha: string;
 }
 
-export class UserInstance extends Model<UserAttributes> implements UserAttributes {
+export class UserInstance
+  extends Model<UserAttributes>
+  implements UserAttributes
+{
   id?: number;
   nome!: string;
   email!: string;

@@ -6,9 +6,26 @@ const usersRouter = Router();
 
 const userController = new UserController();
 
-usersRouter.get("/", authenticateToken, userController.findAll.bind(userController));
-usersRouter.get("/:id", authenticateToken, userController.findById.bind(userController));
-usersRouter.delete("/:id", authenticateToken, userController.delete.bind(userController));
+usersRouter.get(
+  "/",
+  authenticateToken,
+  userController.findAll.bind(userController)
+);
+usersRouter.get(
+  "/:id",
+  authenticateToken,
+  userController.findById.bind(userController)
+);
+usersRouter.delete(
+  "/:id",
+  authenticateToken,
+  userController.delete.bind(userController)
+);
+usersRouter.put(
+  "/",
+  authenticateToken,
+  userController.update.bind(userController)
+);
 
 
-export default usersRouter
+export default usersRouter;
