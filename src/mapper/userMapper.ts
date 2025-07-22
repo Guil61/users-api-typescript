@@ -1,18 +1,16 @@
-import UserInstance, {
-  CreateUserDto,
-  UserAttributes,
-  UserReponseDto,
-} from "../model/userModel";
+import { CreateUserDto, UserAttributes, UserReponseDto } from "../database/dtos/UserDtos";
+import User from "../database/models/User";
+
 
 export function dtoToUserEntity(dto: CreateUserDto): Omit<UserAttributes, 'id'> {
   return {
-    nome: dto.nome,
+    name: dto.name,
     email: dto.email,
-    senha: dto.senha,
+    password: dto.password,
   };
 }
 
-export function userEntityToResponseDto(user: UserInstance): UserReponseDto {
+export function userEntityToResponseDto(user: User): UserReponseDto {
   const userData = user.get();
   
   if (!userData.id) {
@@ -21,7 +19,7 @@ export function userEntityToResponseDto(user: UserInstance): UserReponseDto {
   
   return {
     id: userData.id,
-    nome: userData.nome,
+    name: userData.name,
     email: userData.email,
   };
 }

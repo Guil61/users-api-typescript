@@ -1,6 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: number;
+    }
+  }
+}
+
+
 interface JwtPayload {
   id: number;
 }
@@ -24,7 +33,7 @@ export function authenticateToken(
 
   try {
     const payload = jwt.verify(token, secret) as JwtPayload;
-    (req as any).userId = payload.id;
+    req.userId = payload.id;
     next();
   } catch (error) {
     return res.status(403).json({ error: "Token inválido" });

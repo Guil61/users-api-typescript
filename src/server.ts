@@ -1,19 +1,16 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
 import express, { Request, Response } from "express";
-import db from "./config/databse.config";
-import UserInstance from "./model/userModel";
-import usersRouter from "./routes/userRoutes";
+import usersRouter from "./routes/user-routes";
 import { errorMiddleware } from "./middleware/error";
-import authRouter from "./routes/authRoutes";
+import authRouter from "./routes/auth-routes";
+import { db } from "./database";
+import productRoutes from "./routes/product-routes";
 
 const main = async () => {
-  db.authenticate().then(async () => {
-    console.log("Conexão estabelecida com o banco.");
 
-    await UserInstance.sync();
-    console.log("Tabela de usuários sincronizada com o banco");
-  });
+  // await db.authenticate();
 
   const app = express();
   const port = process.env.PORT;
@@ -21,11 +18,12 @@ const main = async () => {
   app.use(express.json());
   app.use("/users", usersRouter);
   app.use("/auth", authRouter);
+  app.use("/products", productRoutes);
 
   app.use(errorMiddleware);
 
   app.listen(port, () => {
-    console.log("Server running, port:" + port);
+    console.log("Server runningg, port:" + port);
   });
 };
 

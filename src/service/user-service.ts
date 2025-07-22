@@ -3,41 +3,38 @@ import {
   InternalError,
   NotFoundError,
 } from "../handler/apiErrors";
-import UserInstance, {
-  UpdateUserDto,
-  UserReponseDto,
-} from "../model/userModel";
-import { emailIsValid, passwordIsValid } from "../utils/validators";
-import { CreateUserDto } from "../model/userModel";
+
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { userEntityToResponseDto } from "../mapper/userMapper";
+import User from "../database/models/User";
+import { UpdateUserDto, UserReponseDto } from "../database/dtos/UserDtos";
+
 
 export class UserService {
-  async findById(id: number): Promise<UserInstance | null> {
-    const userExists = await UserInstance.findByPk(id);
+  async findById(id: number): Promise<User | null> {
+    const userExists = await User.findByPk(id);
 
     if (!userExists) {
       throw new NotFoundError("Usuário com id " + id + "não existe.");
     }
 
-    return await UserInstance.findByPk(id);
+    return await User.findByPk(id);
   }
 
   async delete(id: number): Promise<number> {
-    const userExists = await UserInstance.findByPk(id);
+    const userExists = await User.findByPk(id);
 
     if (!userExists) {
       throw new NotFoundError("Usuário com id " + id + " não existe.");
     }
 
-    return await UserInstance.destroy({
+    return await User.destroy({
       where: { id },
     });
   }
 
 async update(req: UpdateUserDto): Promise<UserReponseDto> {
-  const user = await UserInstance.findOne({
+  const user = await User.findOne({
     where: { email: req.email },
   });
 
@@ -47,27 +44,26 @@ async update(req: UpdateUserDto): Promise<UserReponseDto> {
     throw new NotFoundError("Usuário não encontrado.");
   }
 
-  if (req.nome) {
-    user.nome = req.nome;
+  if (req.name) {
+    user.name = req.name;
   }
 
-  if (req.senha) {
-    const hashPassword = await bcrypt.hash(req.senha, 10);
-    user.senha = hashPassword
+  if (req.password) {
+    const hashPassword = await bcrypt.hash(req.password, 10);
+    user.password = hashPassword
   }
 
   await user.update({
-    nome: user.nome,
-    senha: user.senha
+    name: user.name,
+    password: user.password
   });
 
-  // await user.save();
 
   const userData = user.get()
 
   return {
     id: userData.id!,
-    nome: userData.nome,
+    name: userData.name,
     email: userData.email,
   };
 }
@@ -75,9 +71,9 @@ async update(req: UpdateUserDto): Promise<UserReponseDto> {
 
   async findAll() {
     try {
-      return await UserInstance.findAll();
+      return await User.findAll();
     } catch (error) {
-      throw new InternalError("Falha ao listar usuário: " + error);
+      throw new InternalError("Falha ao listar usuários: " + error);
     }
   }
 }
