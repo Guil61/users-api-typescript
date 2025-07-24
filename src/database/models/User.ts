@@ -2,12 +2,16 @@ import { Model, DataTypes } from "sequelize";
 import Product from "./Product";
 import { db } from "..";
 import { CreateUserDto, UserAttributes } from "../dtos/UserDtos";
+import RefreshToken from "./RefreshToken";
 
 class User extends Model<UserAttributes, CreateUserDto> {
   static associate() {
     User.hasMany(Product, {
       foreignKey: "userId",
     });
+    User.hasMany(RefreshToken, {
+      foreignKey: "userId",
+    })
   }
   declare id: number;
   declare name: string;
@@ -41,7 +45,8 @@ User.init(
     sequelize: db,
     tableName: "user",
     underscored: true,
-    timestamps: false,
+    timestamps: true,
+    paranoid: true
   }
 );
 

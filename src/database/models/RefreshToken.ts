@@ -1,22 +1,21 @@
-import { Model, DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import User from "./User";
+import { CreateRefreshTokenDto, RefreshTokenAttributes } from "../dtos/RefreshTokenDtos";
 import { db } from "..";
-import { CreateProductDto, ProductAttributes } from "../dtos/ProductDtos";
+import { AllowNull } from "sequelize-typescript";
 
-class Product extends Model <ProductAttributes, CreateProductDto>{
+class RefreshToken extends Model <RefreshTokenAttributes, CreateRefreshTokenDto>{
   static associate() {
-    Product.belongsTo(User, {
+    RefreshToken.belongsTo(User, {
       foreignKey: "userId",
     });
   }
   declare id: number;
-  declare name: string;
-  declare code: string;
-  declare description: string;
+  declare refreshToken: string;
   declare userId: number;
 }
 
-Product.init(
+RefreshToken.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -24,17 +23,10 @@ Product.init(
       allowNull: false,
       primaryKey: true,
     },
-    name: {
+    refreshToken: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    code: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      field: "refresh_token",
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -47,19 +39,19 @@ Product.init(
       onUpdate: "CASCADE",
       onDelete: "CASCADE",
     },
+    expiresAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+
   },
   {
     sequelize: db,
-    tableName: "product",
+    tableName: "refresh_token",
     underscored: true,
     timestamps: true,
     paranoid: true
   }
 );
 
-// Product.belongsTo(User, {
-//   foreignKey: "userId",
-//   as: "user",
-// });
-
-export default Product;
+export default RefreshToken;

@@ -3,34 +3,30 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("product", {
+    await queryInterface.createTable("refresh_token", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true,
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      code: {
-        type: Sequelize.STRING,
+      token: {
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "user",
+          model: "user", 
           key: "id",
         },
         onUpdate: "CASCADE",
-        // onDelete: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      expires_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -40,7 +36,6 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-
       deleted_at: {
         type: Sequelize.DATE,
         allowNull: true,
@@ -49,6 +44,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("product");
+    await queryInterface.dropTable("refresh_token");
   },
 };

@@ -19,6 +19,7 @@ export interface UserLoginRequestDto {
 export interface UserLoginResponseDto {
   email: string;
   token: string;
+  refreshToken: string;
 }
 
 export interface UserReponseDto {
