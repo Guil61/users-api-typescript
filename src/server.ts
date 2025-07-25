@@ -10,7 +10,6 @@ import productRoutes from "./routes/product-routes";
 
 const main = async () => {
 
-  // await db.authenticate();
 
   const app = express();
   const port = process.env.PORT;

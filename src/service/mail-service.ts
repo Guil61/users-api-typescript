@@ -1,7 +1,7 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
 export class MailService {
   passwordRecoveryMessageCreator(token: string): string {
@@ -14,14 +14,18 @@ export class MailService {
   }
 
   transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: 'gmail',
     auth: {
       user: process.env.MAIL_USER,
       pass: process.env.MAIL_PASS,
     },
   });
 
-  async sendMail(recipient: string, subject: string, token: string): Promise<void> {
+  async sendMail(
+    recipient: string,
+    subject: string,
+    token: string
+  ): Promise<void> {
     const info = await this.transporter.sendMail({
       from: `"Test API" <${process.env.MAIL_USER}>`,
       to: recipient,
@@ -29,6 +33,6 @@ export class MailService {
       html: this.passwordRecoveryMessageCreator(token),
     });
 
-    console.log("Email enviado: " + info.messageId);
+    console.log('Email enviado: ' + info.messageId);
   }
 }
