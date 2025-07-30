@@ -3,14 +3,18 @@ version: "3.8"
 services:
   postgres:
     image: postgres:16
-    container_name: postgres_container
+    container_name: users_api_db_container
     restart: always
+    networks:
+      - users_api
     ports:
       - "${DB_PORT}:5432"
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+      TZ: America/Sao_Paulo
+      PGTZ: America/Sao_Paulo
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -19,20 +23,46 @@ services:
       timeout: 5s
       retries: 5
 
+
+  redis:
+    image: redis:8.0-rc1
+    container_name: redis_api_container
+    restart: always
+    command: redis-server --requirepass 1234
+    environment:
+      TZ: America/Sao_Paulo
+    networks:
+      - users_api
+    ports:
+      - "6379:6379"
+
+
   dev:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
+    networks:
+      - users_api
     ports:
       - "${PORT}:${PORT}"
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - .:/app
     environment:
-      - NODE_ENV=development
-    command: bash -c "npm run migrate && npm start"
+      NODE_ENV: development
+      TZ: America/Sao_Paulo
+
+    command: bash -c "npx tsc && npm run migrate && npm start"
 
 volumes:
   postgres_data:
+  
+networks:
+  users_api:
+    driver: bridge
+    name: users_api

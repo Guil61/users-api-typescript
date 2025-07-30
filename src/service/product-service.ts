@@ -1,32 +1,49 @@
-import { get } from "http";
 import {
   CreateProductDto,
   ProductReponseDto,
   UpdateProductDto,
-} from "../database/dtos/ProductDtos";
-import Product from "../database/models/Product";
+} from '../database/dtos/ProductDtos';
+import Product from '../database/models/Product';
 import {
   InternalError,
   NotFoundError,
   UnauthorizedError,
   UserNotOwnerError,
-} from "../handler/apiErrors";
-import User from "../database/models/User";
-import { where } from "sequelize";
+} from '../handler/apiErrors';
+import User from '../database/models/User';
+import { redis } from '../database/config/redis';
 
 export class ProductService {
   async findById(id: number): Promise<ProductReponseDto> {
-    const product = await Product.findByPk(id);
+    const cacheKey = `product:${id}:product`;
 
-    if (!product) throw new NotFoundError("Produto não encontrado");
+    try {
+      const cacheProduct = await redis.get(cacheKey);
+      if (cacheProduct) {
+        console.log(`Cache encontrado para chave: ${cacheKey}`);
+        return JSON.parse(cacheProduct);
+      }
 
-    return {
-      id: product.id,
-      name: product.name,
-      code: product.code,
-      description: product.description,
-      userId: product.userId,
-    };
+      const product = await Product.findByPk(id);
+
+      if (!product) throw new NotFoundError('Produto não encontrado');
+
+      await redis.set(cacheKey, JSON.stringify(product.toJSON()), {
+        EX: 300,
+      });
+      console.log(`Cache CRIADO para chave: ${cacheKey}`);
+
+      return {
+        id: product.id,
+        name: product.name,
+        code: product.code,
+        description: product.description,
+        userId: product.userId,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new Error('Erro ao buscar produto');
+    }
   }
 
   async create(data: CreateProductDto): Promise<ProductReponseDto> {
@@ -47,11 +64,11 @@ export class ProductService {
     const product = await Product.findByPk(id);
 
     if (!product) {
-      throw new NotFoundError("Produto não encontrado");
+      throw new NotFoundError('Produto não encontrado');
     }
 
     if (product.userId != data.userId) {
-      throw new UserNotOwnerError("Usuário não é o responsável pelo produto.");
+      throw new UserNotOwnerError('Usuário não é o responsável pelo produto.');
     }
 
     if (data.name) {
@@ -72,7 +89,7 @@ export class ProductService {
       });
 
       if (!newOwner) {
-        throw new Error("Usuário não encontrado");
+        throw new Error('Usuário não encontrado');
       }
 
       product.userId = newOwner.id;
@@ -90,22 +107,44 @@ export class ProductService {
   }
 
   async delete(id: number, userId: number): Promise<string> {
+    const cacheKey = `product:${id}:product`;
+
     const product = await Product.findByPk(id);
 
     if (userId != product?.userId) {
-      throw new UserNotOwnerError("Usuário não responsável pelo produto.");
+      throw new UserNotOwnerError('Usuário não responsável pelo produto.');
     }
 
     await product.destroy();
 
-    return "produto deletado";
+    redis.del(cacheKey);
+    console.log('Cache deletado para produto de id ', id);
+
+    return 'produto deletado';
   }
 
-  async findAll() {
+  async findAll(userId: number) {
+    const cacheKey = `user:${userId}:products`;
+
     try {
-      return await Product.findAll();
+      const cacheProducts = await redis.get(cacheKey);
+      if (cacheProducts) {
+        console.log(`Cache encontrado para chave: ${cacheKey}`);
+        return JSON.parse(cacheProducts);
+      }
+
+      const products = await Product.findAll({
+        where: { userId: userId },
+      });
+
+      await redis.set(cacheKey, JSON.stringify(products), {
+        EX: 300,
+      });
+      console.log(`Cache CRIADO para chave: ${cacheKey}`);
+
+      return products;
     } catch (error) {
-      throw new InternalError("Falha ao listar usuários: " + error);
+      throw new InternalError('Falha ao listar produtos: ' + error);
     }
   }
 }

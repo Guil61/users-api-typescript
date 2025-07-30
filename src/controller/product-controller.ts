@@ -94,7 +94,7 @@ export class ProductController {
       if (!userId) {
         return res.status(403).json({ msg: "Usuário não autenticado" });
       }
-      const result = await this.productService.findAll();
+      const result = await this.productService.findAll(userId);
       return res.status(200).json(result);
     } catch (error) {
       console.log(error);
