@@ -107,7 +107,13 @@ export class ProductService {
   }
 
   async delete(id: number, userId: number): Promise<string> {
-    const cacheKey = `product:${id}:product`;
+    const cacheKeyId = `product:${id}:product`;
+    const isProductCached = await redis.get(cacheKeyId);
+    const productListCacheKey = `user:${userId}:products`;
+
+    if (isProductCached) {
+      console.log('Chave encontrada para prdouto');
+    }
 
     const product = await Product.findByPk(id);
 
@@ -117,8 +123,11 @@ export class ProductService {
 
     await product.destroy();
 
-    redis.del(cacheKey);
+    await redis.del(cacheKeyId);
     console.log('Cache deletado para produto de id ', id);
+
+    await redis.del(productListCacheKey);
+    console.log('Cache deletado para produto de id ', userId);
 
     return 'produto deletado';
   }
