@@ -149,7 +149,7 @@ export class ProductService {
       await redis.set(cacheKey, JSON.stringify(products), {
         EX: 300,
       });
-      console.log(`Cache CRIADO para chave: ${cacheKey}`);
+      console.log(`Cache criado para chave: ${cacheKey}`);
 
       return products;
     } catch (error) {

@@ -41,7 +41,7 @@ describe('ProductService Tests', () => {
     jest.clearAllMocks();
   });
 
-  it('should create a product and return product response DTO', async () => {
+  it('should create a product', async () => {
     const inputData: CreateProductDto = {
       name: 'Produto Teste',
       code: 'TEST123',
@@ -148,7 +148,7 @@ describe('ProductService Tests', () => {
     expect(result).toEqual(cachedProducts);
   });
 
-  it('should fetch and cache products if not in cache', async () => {
+  it('should get and cache products if not in cache', async () => {
     const userId = 1;
     const dbProducts = [
       { id: 1, name: 'P1', code: 'C1', description: '', userId: 1 },
